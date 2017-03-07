@@ -18,13 +18,13 @@ Keyboard commands:
         i          - open images on page in web browser
 '''
 
-import curses.wrapper
+from curses import wrapper
 import curses.ascii
+from html.parser import HTMLParser
 import formatter
-import htmllib
 import locale
 import os
-import StringIO
+from io import StringIO
 import re
 import tempfile
 import zipfile
@@ -83,9 +83,9 @@ def open_image(screen, name, s):
     image_file.write(s)
     image_file.close()
     try:
-        print image.Image(image_file.name)
+        print(image.Image(image_file.name))
     except:
-        print image_file.name
+        print(image_file.name)
     finally:
         os.unlink(image_file.name)
 
@@ -95,7 +95,7 @@ def textify(html_snippet, img_size=(80, 45), maxcol=72):
     class Formatter(formatter.AbstractFormatter):
         pass
 
-    class Parser(htmllib.HTMLParser):
+    class Parser(HTMLParser):
 
         def anchor_end(self):
             self.anchor = None
@@ -199,15 +199,15 @@ def dump_epub(fl, maxcol=float("+inf")):
     fl = zipfile.ZipFile(fl, 'r')
     chaps = [i for i in table_of_contents(fl)]
     for title, src in chaps:
-        print title
-        print '-' * len(title)
+        print(title)
+        print('-' * len(title))
         if src:
             soup = BeautifulSoup(fl.read(src))
-            print textify(
+            print(textify(
                 unicode(soup.find('body')).encode('utf-8'),
                 maxcol=maxcol,
-            )
-        print '\n'
+            ))
+        print('\n')
 
 
 def curses_epub(screen, fl):
